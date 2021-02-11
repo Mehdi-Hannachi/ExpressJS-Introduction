@@ -6,11 +6,29 @@ const express = require("express");
 
 const app = express();
 
+// Create local middleware
+
+const logger = (req, res, next) => {
+  // console.log("Method : ", req.method);
+  // console.log("Path : ", req.url);
+
+  /* Display result in console with table format*/
+  console.table({ "Method : ": req.method, "Path :": req.path });
+
+  /* 
+      if true next  
+      if false oups !! Blocked
+  */
+  false ? next() : res.send("Oups !! , The request is blocked");
+};
+
+app.use(logger);
+
 // Create the endpoints
 
-// app.get("/", (req, res) => {
-//   res.send("Welcome to Express Introduction");
-// });
+app.get("/", (req, res) => {
+  res.send("Welcome to Express Introduction");
+});
 
 //Show one file
 
@@ -20,12 +38,16 @@ const app = express();
 
 //Show all directory files
 
-app.use(express.static(__dirname + "/public"));
+/*  static is core middleware of express */
+
+// app.use(express.static(__dirname + "/public"));
 
 // Run Server
 
-app.listen(8000, (err) => {
+const PORT = process.env.PORT || 8000;
+
+app.listen(PORT, (err) => {
   err
     ? console.log("Error", err)
-    : console.log("The server is running on Port 8000 .");
+    : console.log(`The server is running on port http://localhost:${PORT}`);
 });
